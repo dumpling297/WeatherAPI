@@ -8,12 +8,17 @@
 ## Introduction
 This is an API application that allows users to check current temperature.
 
-## API Usage
-`GET /locations/{zip-code}`
-
 ## Parameters
-`?scale=Celsius`
-`?scale=Fahrenheit`
+*`?scale=Celsius`
+*`?scale=Fahrenheit`
+
+## API Usage
+*`GET /locations/{zip-code}`
+*Example usage `GET /locations/94305?scale=Celsius`
 
 ## Install
 The application is available at `http://localhost:8080` after invoking `npm install` followed by `npm start`
+
+## Planned
+* Callback implementation.
+* Code coverage.
