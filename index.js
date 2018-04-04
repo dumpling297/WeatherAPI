@@ -5,16 +5,15 @@ const app = express()
 const remote = require('remote-json');
 app.use(bodyParser.json())
 
-var globalVariableTemp;
 var globalVariableScale;
-
+var globalData;
 //send a response once 'home' page is first loaded 
 app.get('/', (req, res, next) => {
-  res.send('WeatherAPI is up and running');
+  res.send('WeatherAPI is up and running!');
   next();
 })
 
-//handles event of loading page 'locations'
+//handle event of loading page 'locations'
 app.get('/locations/*', (req, res, next) => {
  
   //grab the request message, which will include the form of degree (weather) 
@@ -38,20 +37,24 @@ app.get('/locations/*', (req, res, next) => {
   remote(request)
   .get(function (err, res, body) {
     //grab the temperature value
-    var mydata = JSON.parse(body);
-    globalVariableTemp = (mydata.main.temp);
+    globalData = JSON.parse(body);
   });
   setTimeout(function()
   {
-    //respond with the two values in loop of the given interval 
-    res.status(200);
-    res.send(JSON.stringify({ temperature: globalVariableTemp, scale: globalVariableScale }));
-  }, 600);
-})
-
+    if (globalData.cod == 200)
+    {
+      //respond with the two values in loop of the given interval 
+      res.status(200);
+      res.send(JSON.stringify({ temperature: globalData.main.temp, scale: globalVariableScale }));
+    } else {
+      //respond with error messages.
+      res.status(400);
+      res.send('WeatherAPI cannot process your query. (Invalid Zip code?)');
+    }}, 600);
+  })
 
 //setting the port of the application
-app.set('port', 8080)
-const server = app.listen(app.get('port'), () => {
-  console.log(`Http server listener : PORT ${server.address().port}`)
-})
+  app.set('port', 8080)
+  const server = app.listen(app.get('port'), () => {
+    console.log(`Http server listener : PORT ${server.address().port}`)
+  })
